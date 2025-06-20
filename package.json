@@ -1,0 +1,76 @@
+{
+  "name": "aiyos",
+  "version": "1.0.0",
+  "description": "AI Automation SaaS for Filipino Businesses - Full Stack Application",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently \"npm run backend:dev\" \"npm run frontend:dev\"",
+    "dev:windows": "concurrently \"npm run backend:dev:windows\" \"npm run frontend:dev\"",
+    "dev:unix": "concurrently \"npm run backend:dev:unix\" \"npm run frontend:dev\"",
+    "backend:dev": "cd backend && venv\\Scripts\\activate && python manage.py runserver",
+    "backend:dev:windows": "cd backend && venv\\Scripts\\activate && python manage.py runserver",
+    "backend:dev:unix": "cd backend && source venv/bin/activate && python manage.py runserver",
+    "frontend:dev": "cd frontend && npm run dev",
+    "backend:setup": "cd backend && python -m venv venv",
+    "backend:setup:unix": "cd backend && python3 -m venv venv",
+    "backend:install": "cd backend && venv\\Scripts\\activate && pip install -r requirements.txt",
+    "backend:install:windows": "cd backend && venv\\Scripts\\activate && pip install -r requirements.txt",
+    "backend:install:unix": "cd backend && source venv/bin/activate && pip install -r requirements.txt",
+    "backend:migrate": "cd backend && venv\\Scripts\\activate && python manage.py makemigrations && python manage.py migrate",
+    "backend:migrate:windows": "cd backend && venv\\Scripts\\activate && python manage.py makemigrations && python manage.py migrate",
+    "backend:migrate:unix": "cd backend && source venv/bin/activate && python manage.py makemigrations && python manage.py migrate",
+    "backend:superuser": "cd backend && venv\\Scripts\\activate && python manage.py createsuperuser",
+    "backend:superuser:windows": "cd backend && venv\\Scripts\\activate && python manage.py createsuperuser",
+    "backend:superuser:unix": "cd backend && source venv/bin/activate && python manage.py createsuperuser",
+    "frontend:setup": "cd frontend && npm install",
+    "frontend:build": "cd frontend && npm run build",
+    "build": "npm run frontend:build",
+    "setup": "npm run backend:setup && npm run backend:install && npm run frontend:setup && npm run backend:migrate",
+    "setup:windows": "npm run backend:setup && npm run backend:install:windows && npm run frontend:setup && npm run backend:migrate:windows",
+    "setup:unix": "npm run backend:setup:unix && npm run backend:install:unix && npm run frontend:setup && npm run backend:migrate:unix",
+    "setup:quick": "concurrently \"npm run backend:install\" \"npm run frontend:setup\" && npm run backend:migrate",
+    "test:backend": "cd backend && venv\\Scripts\\activate && python manage.py test",
+    "test:backend:windows": "cd backend && venv\\Scripts\\activate && python manage.py test",
+    "test:backend:unix": "cd backend && source venv/bin/activate && python manage.py test",
+    "test:frontend": "cd frontend && npm run test",
+    "test": "concurrently \"npm run test:backend\" \"npm run test:frontend\"",
+    "lint:frontend": "cd frontend && npm run lint",
+    "lint": "npm run lint:frontend",
+    "clean": "concurrently \"npm run clean:backend\" \"npm run clean:frontend\"",
+    "clean:backend": "cd backend && python -c \"import shutil, os; [shutil.rmtree(d, ignore_errors=True) for d in ['__pycache__', '.pytest_cache'] if os.path.exists(d)]\"",
+    "clean:frontend": "cd frontend && npm run clean",
+    "logs:clear": "node -e \"const fs=require('fs'); const path=require('path'); ['backend','frontend'].forEach(d=>{try{fs.readdirSync(d).filter(f=>f.endsWith('.log')).forEach(f=>fs.unlinkSync(path.join(d,f)))}catch(e){}})\"",
+    "check:env": "node scripts/check-env.js",
+    "start:production": "concurrently \"npm run backend:production\" \"npm run frontend:start\"",
+    "backend:production": "cd backend && venv\\Scripts\\activate && python manage.py runserver 0.0.0.0:8000",
+    "frontend:start": "cd frontend && npm start"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "keywords": [
+    "ai",
+    "automation",
+    "saas",
+    "philippines",
+    "filipino",
+    "business",
+    "django",
+    "nextjs",
+    "typescript"
+  ],
+  "author": "AIyos Team",
+  "license": "PROPRIETARY",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/aiyos.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/aiyos/issues"
+  },
+  "homepage": "https://aiyos.ph"
+}

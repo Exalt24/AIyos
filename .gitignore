@@ -1,0 +1,408 @@
+# AIyos - Full Stack .gitignore
+# Django Backend + Next.js Frontend + Development Environment
+
+# =============================================================================
+# ENVIRONMENT VARIABLES & SECRETS (CRITICAL - NEVER COMMIT)
+# =============================================================================
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env.staging
+.env.prod
+backend/.env
+frontend/.env.local
+**/secrets.json
+**/*secret*
+**/*SECRET*
+
+# API Keys and sensitive config
+**/config/secrets/
+openrouter_key.txt
+stripe_keys.txt
+
+# =============================================================================
+# PYTHON / DJANGO BACKEND
+# =============================================================================
+
+# Python virtual environments
+venv/
+env/
+ENV/
+backend/venv/
+backend/env/
+.venv/
+pyvenv.cfg
+
+# Python bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Django specific
+backend/db.sqlite3
+backend/db.sqlite3-journal
+backend/media/
+backend/staticfiles/
+backend/static/
+backend/collected-static/
+backend/locale/
+*.log
+migrations/__pycache__/
+
+# Django secret key and settings
+backend/aiyos/settings/local.py
+backend/aiyos/settings/secrets.py
+
+# Celery
+celerybeat-schedule
+celerybeat.pid
+
+# Coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+.pytest_cache/
+
+# =============================================================================
+# NODE.JS / NEXT.JS FRONTEND
+# =============================================================================
+
+# Dependencies
+node_modules/
+frontend/node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Next.js build output
+.next/
+frontend/.next/
+out/
+frontend/out/
+
+# Next.js cache
+.swc/
+frontend/.swc/
+
+# Production build
+build/
+frontend/build/
+dist/
+frontend/dist/
+
+# Vercel deployment
+.vercel
+frontend/.vercel
+
+# Package managers
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# TypeScript build info
+*.tsbuildinfo
+next-env.d.ts
+
+# ESLint cache
+.eslintcache
+
+# Storybook build outputs
+.out
+.storybook-out
+
+# =============================================================================
+# DATABASES
+# =============================================================================
+*.sqlite3
+*.sqlite3-journal
+*.db
+*.db-journal
+postgres_data/
+mysql_data/
+redis_data/
+
+# Database backups
+*.sql
+*.dump
+*.backup
+
+# =============================================================================
+# IDE / EDITOR FILES
+# =============================================================================
+
+# Visual Studio Code
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# IntelliJ IDEA / PyCharm
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Vim
+*.swp
+*.swo
+*~
+
+# Emacs
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+.\#*
+
+# =============================================================================
+# OPERATING SYSTEM FILES
+# =============================================================================
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon?
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+[Dd]esktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
+
+# Linux
+*~
+.nfs*
+
+# =============================================================================
+# DEVELOPMENT & TESTING
+# =============================================================================
+
+# Testing
+.nyc_output
+coverage/
+cypress/videos/
+cypress/screenshots/
+test-results/
+playwright-report/
+test-results.xml
+
+# Temporary files
+*.tmp
+*.temp
+.tmp/
+.temp/
+
+# Log files
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# =============================================================================
+# DEPLOYMENT & INFRASTRUCTURE
+# =============================================================================
+
+# Docker
+.dockerignore
+docker-compose.override.yml
+.docker/
+
+# Terraform
+*.tfstate
+*.tfstate.*
+.terraform/
+.terraform.lock.hcl
+
+# Kubernetes
+kube-config
+
+# =============================================================================
+# DOCUMENTATION & ASSETS (OPTIONAL)
+# =============================================================================
+
+# Large documentation files (uncomment if needed)
+# *.pdf
+# *.docx
+# *.pptx
+
+# Large media files (be selective)
+# *.mp4
+# *.avi
+# *.mov
+
+# =============================================================================
+# PROJECT SPECIFIC (AIYOS)
+# =============================================================================
+
+# User uploaded files (if stored locally during development)
+backend/uploads/
+frontend/public/uploads/
+
+# Generated documentation
+docs/build/
+api-docs/
+
+# Local development scripts
+local_scripts/
+dev_tools/
+*.local.sh
+*.local.bat
+
+# Test data files
+test_data/
+sample_data/
+mock_data/
+
+# AI model cache (if stored locally)
+ai_cache/
+model_cache/
+
+# Filipino localization working files
+translations/working/
+*.po~
+
+# Analytics and monitoring (local)
+analytics/
+monitoring/local/
+
+# =============================================================================
+# DEPENDENCIES & PACKAGE MANAGERS
+# =============================================================================
+
+# Python package manager
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Ruby (if using any Ruby tools)
+Gemfile.lock
+
+# Go (if using any Go tools)
+go.sum
+
+# =============================================================================
+# BACKUP & TEMPORARY FILES
+# =============================================================================
+
+# Backup files
+*.bak
+*.backup
+*.old
+*.orig
+*.save
+*~
+
+# Temporary development files
+TODO.md
+NOTES.md
+SCRATCH.md
+temp_*
+tmp_*
+
+# =============================================================================
+# SECURITY & COMPLIANCE
+# =============================================================================
+
+# Security scan results
+security-report.json
+vulnerability-report.html
+
+# License keys
+*.license
+license.key
+
+# SSL certificates (if stored locally)
+*.pem
+*.key
+*.crt
+*.csr
+*.p12
+*.pfx
+
+# =============================================================================
+# PERFORMANCE & MONITORING
+# =============================================================================
+
+# Performance profiling
+*.prof
+profile/
+profiler/
+
+# Memory dumps
+*.heap
+*.hprof
+heap.json
+
+# =============================================================================
+# AI & ML SPECIFIC (AIYOS)
+# =============================================================================
+
+# Model files (if downloaded locally)
+*.model
+*.pkl
+*.h5
+*.pt
+*.onnx
+
+# Training data
+training_data/
+datasets/
+
+# AI experiment logs
+experiments/
+tensorboard_logs/
+wandb/
