@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "AI Automation SaaS for Filipino Businesses - Full Stack Application",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "concurrently \"npm run backend:dev\" \"npm run frontend:dev\"",
     "dev:windows": "concurrently \"npm run backend:dev:windows\" \"npm run frontend:dev\"",

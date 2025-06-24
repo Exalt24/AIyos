@@ -52,265 +52,535 @@ AIyos is a comprehensive AI-powered automation platform specifically designed fo
 
 ### Required API Keys
 
-- **OpenRouter API Key** - For AI features
+- **OpenRouter API Key** - For AI features (get from [openrouter.ai](https://openrouter.ai))
 - **Stripe API Keys** - For subscription payments (optional for development)
 
-## 🚀 Quick Start
+### Verify Prerequisites
 
-### 1. Clone the Repository
+```bash
+node --version    # Should show v18+ 
+python --version  # Should show 3.11+ (Windows)
+python3 --version # Should show 3.11+ (Linux/Mac)
+git --version     # Any recent version
+```
+
+## 🚀 Complete Setup Guide
+
+### Step 1: Clone and Install Root Dependencies
 
 ```bash
 git clone https://github.com/Exalt24/AIyos.git
 cd AIyos
-```
 
-### 2. One-Command Setup
-
-**Step 1: Install Root Dependencies**
-
-```bash
-# Install concurrently (for running both servers)
+# Install concurrently (required for running both servers)
 npm install
 ```
 
-**Step 2: Complete Project Setup**
+### Step 2: Backend Setup
 
 <details>
-<summary><strong>🪟 Windows Setup</strong></summary>
+<summary><strong>🪟 Windows Backend Setup</strong></summary>
 
 ```bash
-# Create and activate Python virtual environment
+# Navigate to backend
 cd backend
+
+# Create virtual environment
 python -m venv venv
+
+# Activate virtual environment  
 venv\Scripts\activate
 
+# You should see (venv) in your command prompt
 # Install Python dependencies
 pip install -r requirements.txt
 
-# Go back to root and install frontend dependencies
-cd ..
-cd frontend
-npm install
-
-# Return to root directory
-cd ..
-
-# Run database migrations
-cd backend
-python manage.py makemigrations
-python manage.py migrate
-
-# Create Django admin user
-python manage.py createsuperuser
-
-# Return to root directory for development
-cd ..
-```
-
-</details>
-
-<details>
-<summary><strong>🐧 Linux/Mac Setup</strong></summary>
-
-```bash
-# Create and activate Python virtual environment
-cd backend
-python3 -m venv venv
-source venv/bin/activate
-
-# Install Python dependencies
-pip install -r requirements.txt
-
-# Go back to root and install frontend dependencies
-cd ../frontend
-npm install
-
-# Return to root directory
-cd ..
-
-# Run database migrations
-cd backend
-python manage.py makemigrations
-python manage.py migrate
-
-# Create Django admin user
-python manage.py createsuperuser
-
-# Return to root directory for development
-cd ..
-```
-
-</details>
-
-**Alternative: Automated Setup**
-
-<details>
-<summary><strong>🪟 Windows Automated Setup (Default)</strong></summary>
-
-```bash
-# Install root dependencies (concurrently only)
-npm install
-
-# Run Windows setup (default)
-npm run setup
-# OR explicitly:
-npm run setup:windows
-
-# Create admin user
-npm run backend:superuser
-```
-
-</details>
-
-<details>
-<summary><strong>🐧 Linux/Mac Automated Setup</strong></summary>
-
-```bash
-# Install root dependencies (concurrently only)  
-npm install
-
-# Run Unix-specific setup (uses python3)
-npm run setup:unix
-
-# Create admin user
-npm run backend:superuser:unix
-```
-
-</details>
-
-### 3. Configure Environment Variables
-
-**Backend Environment Setup:**
-
-<details>
-<summary><strong>🪟 Windows</strong></summary>
-
-```bash
-# Navigate to backend and copy environment template
-cd backend
+# Copy environment template
 copy .env.example .env
-
-# Activate virtual environment to verify setup
-venv\Scripts\activate
 ```
 
 </details>
 
 <details>
-<summary><strong>🐧 Linux/Mac</strong></summary>
+<summary><strong>🐧 Linux/Mac Backend Setup</strong></summary>
 
 ```bash
-# Navigate to backend and copy environment template
+# Navigate to backend
 cd backend
-cp .env.example .env
 
-# Activate virtual environment to verify setup
+# Create virtual environment
+python3 -m venv venv
+
+# Activate virtual environment
 source venv/bin/activate
+
+# You should see (venv) in your terminal prompt
+# Install Python dependencies
+pip install -r requirements.txt
+
+# Copy environment template
+cp .env.example .env
 ```
 
 </details>
 
-**Edit `backend/.env` with your configuration:**
+### Step 3: Generate Required Keys
+
+**Before configuring the environment, you need to generate secure keys:**
+
+#### Generate Django SECRET_KEY
+
+```bash
+# Ensure you're in backend directory with virtual environment activated
+cd backend
+venv\Scripts\activate           # Windows
+source venv/bin/activate        # Linux/Mac
+
+# Generate a secure Django secret key
+python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"
+```
+
+**Example Output:**
+```
+django-insecure-8k2@9j_m4!q7p#r*v+n8w@3s%7c$e9u&2i1o#k6f4g*h5j-x7z
+```
+
+**Copy this generated key** - you'll use it in the next step.
+
+#### Get OpenRouter API Key
+
+1. Visit [openrouter.ai](https://openrouter.ai)
+2. Sign up for a free account
+3. Go to "API Keys" section
+4. Create a new API key
+5. Copy the key (starts with `sk-or-v1-...`)
+
+### Step 4: Configure Backend Environment
+
+**Critical:** Edit `backend/.env` with your **generated values** (not placeholders):
 
 ```env
-# Django Core
-SECRET_KEY=your-super-secret-key-here
+# Django Core Settings (replace with YOUR generated secret key)
+SECRET_KEY=django-insecure-dev-key-change-in-production-123456789
 DEBUG=True
 ALLOWED_HOSTS=localhost,127.0.0.1
 
-# Database (SQLite for development)
+# Database Configuration (SQLite for development)
 DATABASE_URL=sqlite:///db.sqlite3
 
-# AI Integration (Required)
-OPENROUTER_API_KEY=your_openrouter_api_key_here
+# Redis Configuration (for Celery and Cache)
+REDIS_URL=redis://localhost:6379
+
+# AI Integration (REQUIRED - Replace with your actual OpenRouter API key)
+OPENROUTER_API_KEY=sk-or-v1-your-actual-openrouter-api-key-here
 CURRENT_AI_MODEL=deepseek/deepseek-r1
 
-# CORS
-CORS_ORIGIN_WHITELIST=http://localhost:3000
+# File Storage (Optional for development - leave empty or use real values)
+CLOUDINARY_URL=
+
+# Email Backend (Development)
+EMAIL_BACKEND=django.core.mail.backends.console.EmailBackend
+
+# Security and CORS
+CORS_ORIGIN_WHITELIST=http://localhost:3000,https://aiyos.vercel.app
+
+# Optional: Stripe Settings (leave empty for development)
+STRIPE_PUBLISHABLE_KEY=
+STRIPE_SECRET_KEY=
+STRIPE_WEBHOOK_SECRET=
+
+# Optional: Additional Django Settings
+DJANGO_SETTINGS_MODULE=aiyos.settings
+PYTHONPATH=/app
 ```
 
-**Frontend Environment Setup:**
+**⚠️ Critical Steps:** 
+1. **Replace SECRET_KEY** with the key you generated in Step 3
+2. **Replace OPENROUTER_API_KEY** with your real API key from OpenRouter
+3. **No spaces around the `=` sign**
+4. **No quotes around values unless specified**
 
-<details>
-<summary><strong>🪟 Windows</strong></summary>
+**Example of what your actual .env should look like:**
+```env
+SECRET_KEY=django-insecure-8k2@9j_m4!q7p#r*v+n8w@3s%7c$e9u&2i1o#k6f4g*h5j-x7z
+OPENROUTER_API_KEY=sk-or-v1-1234567890abcdef1234567890abcdef1234567890abcdef
+# ... rest of the configuration
+```
+
+### Step 5: Frontend Setup
 
 ```bash
-# Navigate to frontend
-cd ..\frontend
-copy .env.local.example .env.local
+# Navigate to frontend (from root directory)
+cd frontend
+
+# Install Node.js dependencies
+npm install
+
+# Copy environment template
+cp .env.local.example .env.local    # Linux/Mac
+copy .env.local.example .env.local  # Windows
 ```
 
-</details>
+### Step 6: Configure Frontend Environment
 
-<details>
-<summary><strong>🐧 Linux/Mac</strong></summary>
-
-```bash
-# Navigate to frontend  
-cd ../frontend
-cp .env.local.example .env.local
-```
-
-</details>
-
-**Edit `frontend/.env.local`:**
+Edit `frontend/.env.local` with these **exact** values:
 
 ```env
+# API Configuration
 NEXT_PUBLIC_API_URL=http://localhost:8000/api
+
+# App Configuration
 NEXT_PUBLIC_APP_NAME=AIyos
 NEXT_PUBLIC_ENABLE_FILIPINO_LANG=true
+
+# Optional: Analytics (leave empty for development)
+NEXT_PUBLIC_GA_ID=
 ```
 
-### 4. Start Development
-
-**Quick Start (Windows Default):**
+### Step 7: Database Setup
 
 ```bash
-# Start both servers with virtual environment activation
+# Navigate back to backend (from frontend directory)
+cd ../backend
+
+# Ensure virtual environment is activated (you should see (venv) in prompt)
+# If not activated:
+venv\Scripts\activate           # Windows
+source venv/bin/activate        # Linux/Mac
+
+# Create and apply migrations
+python manage.py makemigrations
+python manage.py migrate
+
+# Create Django admin user
+python manage.py createsuperuser
+```
+
+**Superuser Creation Prompts:**
+- Username: `admin` (or your preference)
+- Email: `your-email@example.com`
+- Password: Choose a secure password (8+ characters)
+
+### Step 8: Verify Complete Setup
+
+```bash
+# Navigate back to root directory
+cd ..
+
+# Run environment check - should show ALL GREEN ✅
+node scripts/check-env.js
+```
+
+**Expected Output:** All items should show green ✅ checkmarks. If you see red ❌, review the steps above.
+
+## 🏃 Running the Application
+
+### Method 1: Start Both Servers Together (Recommended)
+
+```bash
+# From root directory, ensure virtual environment paths are correct
+npm run dev              # Windows (default)
+npm run dev:unix         # Linux/Mac
+```
+
+### Method 2: Start Servers Individually
+
+<details>
+<summary><strong>🪟 Windows Individual Startup</strong></summary>
+
+```bash
+# Terminal 1: Backend
+cd backend
+venv\Scripts\activate
+python manage.py runserver 8000
+
+# Terminal 2: Frontend (new terminal)
+cd frontend
 npm run dev
 ```
 
-**Platform-Specific Development Commands:**
+</details>
 
 <details>
-<summary><strong>🪟 Windows Development (Default)</strong></summary>
+<summary><strong>🐧 Linux/Mac Individual Startup</strong></summary>
 
 ```bash
-# Start both servers with virtual environment activation
-npm run dev                    # Default Windows mode
-npm run dev:windows            # Explicit Windows mode
+# Terminal 1: Backend
+cd backend
+source venv/bin/activate
+python3 manage.py runserver 8000
 
-# Or run individually:
-npm run backend:dev            # Django with venv activation (Windows)
-npm run frontend:dev           # Next.js (same for all platforms)
+# Terminal 2: Frontend (new terminal)
+cd frontend
+npm run dev
 ```
 
 </details>
 
-<details>
-<summary><strong>🐧 Linux/Mac Development</strong></summary>
+## 🌐 Application URLs
+
+Once both servers are running successfully:
+
+- **🎯 Frontend Application**: `http://localhost:3000`
+- **🔧 Backend API**: `http://localhost:8000/api`
+- **👤 Django Admin**: `http://localhost:8000/admin`
+- **📚 API Documentation**: `http://localhost:8000/api/docs`
+
+## 🔧 Essential Development Commands
 
 ```bash
-# Start both servers with virtual environment activation  
-npm run dev:unix
+# 🚀 Start development (with virtual environment activation)
+npm run dev              # Windows default
+npm run dev:unix         # Linux/Mac
 
-# Or run individually:
-npm run backend:dev:unix       # Django with venv activation (Unix)
-npm run frontend:dev           # Next.js (same for all platforms)
+# 🔍 Check environment setup (run this first if issues)
+npm run check:env
+
+# 🧹 Clean cache and build files  
+npm run clean
+
+# 🏃 Run servers individually
+npm run backend:dev      # Django only (Windows)
+npm run backend:dev:unix # Django only (Linux/Mac)
+npm run frontend:dev     # Next.js only (all platforms)
+
+# 👤 Create additional admin users
+npm run backend:superuser      # Windows
+npm run backend:superuser:unix # Linux/Mac
+
+# 🗄️ Database operations
+npm run backend:migrate        # Apply database changes
+npm run backend:makemigrations # Create new migrations
+
+# 📊 Run tests
+npm run test
+
+# 🏗️ Build for production
+npm run build
 ```
 
-</details>
+## 🔧 Troubleshooting Common Issues
 
-**Important:** The virtual environment **must be activated** for the Django backend to access installed packages. The commands handle this automatically (Windows by default).
+### Environment Check Failures
 
-**Development URLs:**
+**Problem:** Red ❌ marks in environment check
 
-- 🎯 **Frontend**: `http://localhost:3000`
-- 🔧 **Backend API**: `http://localhost:8000/api`
-- 👤 **Django Admin**: `http://localhost:8000/admin`
-- 📚 **API Docs**: `http://localhost:8000/api/docs`
+1. **Missing environment files:**
+   ```bash
+   # Ensure these files exist with actual values:
+   ls backend/.env
+   ls frontend/.env.local
+   ```
 
-**Cross-Platform Note:** Default commands use Windows syntax. Linux/Mac users should use the `:unix` variants (e.g., `npm run dev:unix`).
+2. **Placeholder values still present:**
+   ```bash
+   # Check for placeholder values in backend/.env:
+   grep "your_" backend/.env
+   # Should return nothing
+   
+   # Check for placeholder SECRET_KEY:
+   grep "your-super-secret-key" backend/.env
+   # Should return nothing
+   ```
+
+3. **Virtual environment not found:**
+   ```bash
+   cd backend
+   # Recreate if needed:
+   rm -rf venv
+   python -m venv venv          # Windows
+   python3 -m venv venv         # Linux/Mac
+   ```
+
+### SECRET_KEY Generation Issues
+
+**Problem:** Can't generate SECRET_KEY or getting errors
+
+**Solution 1: Use Django's generator (Recommended)**
+```bash
+cd backend
+venv\Scripts\activate    # Windows
+source venv/bin/activate # Linux/Mac
+
+# Generate secret key
+python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"
+```
+
+**Solution 2: Use online generator**
+- Visit [djecrety.ir](https://djecrety.ir/)
+- Click "Generate" button
+- Copy the generated key
+
+**Solution 3: Manual generation**
+```python
+# If Django import fails, use this:
+import secrets
+import string
+chars = string.ascii_letters + string.digits + '!@#$%^&*(-_=+)'
+key = ''.join(secrets.choice(chars) for _ in range(50))
+print(f"django-insecure-{key}")
+```
+
+**Problem:** SECRET_KEY still shows as placeholder in environment check
+
+1. **Verify the key was properly saved:**
+   ```bash
+   grep SECRET_KEY backend/.env
+   # Should show your actual generated key, not placeholder
+   ```
+
+2. **Ensure no extra characters:**
+   ```bash
+   # Key should be on one line with no quotes:
+   SECRET_KEY=django-insecure-your-actual-generated-key-here
+   ```
+
+### Virtual Environment Issues
+
+**Windows activation problems:**
+```bash
+cd backend
+# Try these alternatives:
+venv\Scripts\activate
+venv\Scripts\activate.bat
+venv\Scripts\Activate.ps1
+
+# If PowerShell execution policy error:
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+```
+
+**Linux/Mac activation problems:**
+```bash
+cd backend
+# Check permissions:
+chmod +x venv/bin/activate
+source venv/bin/activate
+
+# Verify activation:
+which python  # Should show path to venv/bin/python
+```
+
+### Module Import Errors
+
+**Python packages not found:**
+```bash
+cd backend
+# Ensure virtual environment is activated (see (venv) in prompt)
+venv\Scripts\activate    # Windows
+source venv/bin/activate # Linux/Mac
+
+# Reinstall dependencies:
+pip install --upgrade pip
+pip install -r requirements.txt
+
+# Test Django installation:
+python -c "import django; print(django.get_version())"
+```
+
+**Node.js dependency issues:**
+```bash
+cd frontend
+# Clear and reinstall:
+rm -rf node_modules package-lock.json  # Linux/Mac
+rmdir /s node_modules & del package-lock.json  # Windows
+npm install
+
+# Verify Next.js:
+npx next --version
+```
+
+### Database Issues
+
+**Migration errors:**
+```bash
+cd backend
+source venv/bin/activate  # Ensure venv is active
+
+# Check migration status:
+python manage.py showmigrations
+
+# Create fresh migrations:
+python manage.py makemigrations --empty authentication
+python manage.py makemigrations --empty automations
+python manage.py makemigrations --empty integrations
+python manage.py makemigrations --empty ai_services
+python manage.py migrate
+```
+
+**Database locked error:**
+```bash
+# Stop all Django processes first, then:
+cd backend
+rm db.sqlite3  # This removes the database
+python manage.py migrate
+python manage.py createsuperuser
+```
+
+### Port Conflicts
+
+**Ports 3000 or 8000 already in use:**
+
+Windows:
+```bash
+netstat -ano | findstr :3000
+taskkill /PID <PID_NUMBER> /F
+
+netstat -ano | findstr :8000
+taskkill /PID <PID_NUMBER> /F
+```
+
+Linux/Mac:
+```bash
+# Kill processes on ports:
+lsof -ti:3000 | xargs kill -9
+lsof -ti:8000 | xargs kill -9
+
+# Or use different ports:
+# Backend: python manage.py runserver 8001
+# Frontend: npm run dev -- -p 3001
+```
+
+### API Connection Issues
+
+**Frontend can't reach backend:**
+
+1. **Verify backend is running:**
+   ```bash
+   curl http://localhost:8000/api/
+   # Should return JSON response
+   ```
+
+2. **Check CORS settings in backend/.env:**
+   ```env
+   CORS_ORIGIN_WHITELIST=http://localhost:3000
+   ```
+
+3. **Verify frontend environment:**
+   ```bash
+   grep NEXT_PUBLIC_API_URL frontend/.env.local
+   # Should show: NEXT_PUBLIC_API_URL=http://localhost:8000/api
+   ```
+
+### AI Features Not Working
+
+**OpenRouter API integration issues:**
+
+1. **Verify API key in backend/.env:**
+   ```bash
+   grep OPENROUTER_API_KEY backend/.env
+   # Should show your actual API key, not placeholder
+   ```
+
+2. **Test API key validity:**
+   ```bash
+   curl -H "Authorization: Bearer your-api-key" https://openrouter.ai/api/v1/models
+   ```
+
+3. **Check model availability:**
+   ```env
+   # In backend/.env:
+   CURRENT_AI_MODEL=deepseek/deepseek-r1
+   ```
 
 ## 📁 Project Structure
 
@@ -322,8 +592,10 @@ AIyos/
 │   ├── integrations/           # Filipino service integrations
 │   ├── ai_services/            # OpenRouter AI integration
 │   ├── aiyos/                  # Django project config
+│   ├── venv/                   # Python virtual environment
 │   ├── requirements.txt        # Python dependencies
 │   ├── .env                    # Backend environment variables
+│   ├── db.sqlite3             # SQLite database (after setup)
 │   └── manage.py              # Django management
 │
 ├── frontend/                   # Next.js TypeScript app
@@ -334,268 +606,67 @@ AIyos/
 │   │   ├── store/             # Zustand state management
 │   │   ├── types/             # TypeScript definitions
 │   │   └── lib/               # Utilities & constants
+│   ├── node_modules/          # Node dependencies (after npm install)
 │   ├── package.json           # Node dependencies
 │   ├── .env.local             # Frontend environment variables
 │   └── next.config.ts         # Next.js configuration
 │
 ├── scripts/                    # Development utilities
-│   └── check-env.js           # Environment validation
+│   └── check-env.js           # Environment validation script
 ├── package.json               # Root package.json with concurrently
 ├── .gitignore                 # Comprehensive gitignore
 └── README.md                  # This file
 ```
 
-## 🔧 Development Workflow
+## 🧪 Testing Your Setup
 
-### Essential Commands
-
-```bash
-# 🚀 Start development (Windows default, with venv activation)
-npm run dev              # Default Windows mode
-npm run dev:windows      # Explicit Windows mode  
-npm run dev:unix         # For Linux/Mac users
-
-# 🔍 Check environment setup
-npm run check:env
-
-# 📦 Install only root dependencies (concurrently)
-npm install
-
-# 🧹 Clean cache and build files  
-npm run clean
-
-# 🔨 Setup commands
-npm run setup            # Default Windows setup
-npm run setup:windows    # Explicit Windows setup
-npm run setup:unix       # For Linux/Mac
-
-# 🏃 Run servers individually (with venv)
-npm run backend:dev      # Django only (Windows default)
-npm run backend:dev:unix # Django only (Linux/Mac)
-npm run frontend:dev     # Next.js only (all platforms)
-
-# 👤 Create admin user
-npm run backend:superuser      # Windows default
-npm run backend:superuser:unix # Linux/Mac
-
-# 📊 Run tests
-npm run test
-
-# 🏗️ Build for production
-npm run build
-```
-
-### Environment Check
-
-Before starting development, always run:
+### 1. Environment Validation
 
 ```bash
-npm run check:env
+# This should show ALL GREEN ✅
+node scripts/check-env.js
 ```
 
-This will verify:
+**Common issues if not all green:**
+- Missing SECRET_KEY: Generate using Django's method in Step 3
+- Missing OpenRouter API key: Get from openrouter.ai
+- Placeholder values: Replace with actual generated values
 
-- ✅ Project structure is correct
-- ✅ Dependencies are installed
-- ✅ Environment variables are configured
-- ✅ Database is set up
-- ✅ Both servers can start
-
-### Troubleshooting Setup Issues
-
-**Cross-Platform Virtual Environment Issues:**
-
-<details>
-<summary><strong>🪟 Windows Common Issues</strong></summary>
+### 2. Backend API Test
 
 ```bash
-# If venv activation fails
-cd backend
-python -m venv venv --clear
-venv\Scripts\activate.bat
+# Test basic API endpoint
+curl http://localhost:8000/api/
+# Expected: JSON response with API information
 
-# If pip install fails with permissions
-pip install --user -r requirements.txt
-
-# If Python command not found
-py -m venv venv
-py -m pip install -r requirements.txt
+# Test Django admin
+# Visit: http://localhost:8000/admin
+# Login with superuser credentials
 ```
 
-</details>
+### 3. Frontend Application Test
 
-<details>
-<summary><strong>🐧 Linux/Mac Common Issues</strong></summary>
+1. Open http://localhost:3000
+2. Check browser console for errors (F12 → Console)
+3. Try registering a new account
+4. Navigate between pages
+5. Test responsive design (mobile view)
 
-```bash
-# If python3 command not found (Ubuntu/Debian)
-sudo apt update && sudo apt install python3 python3-pip python3-venv
+### 4. AI Integration Test (If API Key Configured)
 
-# If virtual environment fails
-cd backend
-python3 -m venv venv --clear
-source venv/bin/activate
-
-# If permission denied
-sudo chown -R $USER:$USER .
-chmod +x venv/bin/activate
-
-# macOS: If python3 not found
-brew install python3
-```
-
-</details>
-
-**Step-by-Step Manual Setup:**
-
-```bash
-# If automated setup fails, try manual approach:
-
-# 1. Root dependencies only (just concurrently)
-npm install
-
-# 2. Backend setup manually
-cd backend
-python -m venv venv                    # Windows
-# OR
-python3 -m venv venv                   # Linux/Mac
-
-# Activate virtual environment
-venv\Scripts\activate                  # Windows  
-# OR
-source venv/bin/activate               # Linux/Mac
-
-# Install Python dependencies
-pip install -r requirements.txt
-
-# 3. Frontend setup manually
-cd ../frontend
-npm install
-
-# 4. Database setup
-cd ../backend
-python manage.py makemigrations
-python manage.py migrate
-python manage.py createsuperuser          # Windows
-
-# OR for Linux/Mac:
-python3 manage.py makemigrations  
-python3 manage.py migrate
-python3 manage.py createsuperuser         # Linux/Mac
-
-# 5. Return to root and test
-cd ..
-npm run check:env
-```
-
-### Testing Checklist
-
-#### 🔧 Phase 1: Local Development Setup
-
-- [ ] Backend Django server running at `localhost:8000`
-- [ ] Frontend Next.js server running at `localhost:3000`  
-- [ ] Database migrations applied successfully
-- [ ] Admin interface accessible with superuser account
-- [ ] API documentation loads at `/api/docs/`
-
-#### 🧪 Phase 2: Core Feature Testing
-
-- [ ] User registration with business profile
-- [ ] Login/logout flow with JWT tokens
-- [ ] Dashboard loads with user stats
-- [ ] Email-to-Task AI feature (requires OpenRouter API key)
-- [ ] Social Content Generator
-- [ ] Navigation between all pages
-- [ ] Mobile responsive design
-
-#### 🔗 Phase 3: Integration Testing
-
-- [ ] Frontend-backend API communication
-- [ ] Authentication state management
-- [ ] Error handling and toast notifications
-- [ ] Form validation (React Hook Form + Zod)
-- [ ] AI usage tracking and quota management
-
-### Common Issues & Solutions
-
-**Backend Issues:**
-
-```bash
-# Database migration errors
-python manage.py makemigrations --empty appname
-python manage.py migrate --fake
-
-# Module import errors
-pip install -r requirements.txt
-
-# Permission errors on Windows
-venv\Scripts\activate.bat
-```
-
-**Frontend Issues:**
-
-```bash
-# Module resolution errors
-rm -rf node_modules package-lock.json
-npm install
-
-# TypeScript errors
-npm run type-check
-
-# Build errors
-npm run build
-```
-
-## 🧪 Testing Guidelines
-
-### Manual Testing Priority
-
-1. **Authentication Flow**: Register → Login → Dashboard
-2. **AI Features**: Test with sample data (email content, social media prompts)
-3. **Navigation**: All menu items and page transitions
-4. **Responsive Design**: Mobile, tablet, desktop views
-5. **Error States**: Network errors, invalid inputs, API failures
-
-### Test Data
-
-Use these sample inputs for testing:
-
-**Email-to-Task Testing:**
-
-```text
-Sample Email Content:
-"Hi, we need to schedule a client meeting for next week to discuss the Q1 marketing campaign. Please prepare the presentation materials and send calendar invites to the team."
-
-Expected Output: Structured task with title, description, priority, and due date.
-```
-
-**Social Content Testing:**
-
-```text
-Business Update: "We're launching our new delivery service in Metro Manila!"
-Platform: Facebook
-Tone: Excited
-Target: Local customers
-
-Expected: Filipino-friendly Facebook post with hashtags and call-to-action.
-```
-
-## 🚀 Deployment
-
-### Staging Deployment (Weeks 5-6)
-
-- **Backend**: Render staging environment
-- **Frontend**: Vercel preview deployment  
-- **Database**: Render PostgreSQL
-- **Environment**: Staging API keys and configuration
-
-### Production Deployment (Weeks 7-8)
-
-- **Domain**: AIyos.ph (tentative) registration
-- **Backend**: Render production with managed PostgreSQL + Redis
-- **Frontend**: Vercel production with custom domain
-- **Monitoring**: Error tracking and performance monitoring
-- **Security**: SSL, rate limiting, input validation
+1. Register/login to the application
+2. Navigate to AI features section
+3. Test Email-to-Task converter with sample content:
+   ```
+   Subject: Team Meeting Next Week
+   Content: Hi team, we need to schedule our quarterly review meeting for next Tuesday at 2 PM. Please prepare your project updates and bring quarterly reports. Location will be Conference Room A.
+   ```
+4. Test Social Content Generator with sample input:
+   ```
+   Business Update: "Launching new delivery service in Makati"
+   Platform: Facebook
+   Tone: Excited
+   ```
 
 ## 💰 Subscription Tiers
 
@@ -625,6 +696,23 @@ Expected: Filipino-friendly Facebook post with hashtags and call-to-action.
 - **E-commerce**: Order processing, inventory management
 - **OFW Families**: Remittance tracking, financial planning
 
+## 🚀 Deployment
+
+### Staging Deployment (Weeks 5-6)
+
+- **Backend**: Render staging environment
+- **Frontend**: Vercel preview deployment  
+- **Database**: Render PostgreSQL
+- **Environment**: Staging API keys and configuration
+
+### Production Deployment (Weeks 7-8)
+
+- **Domain**: AIyos.ph (tentative) registration
+- **Backend**: Render production with managed PostgreSQL + Redis
+- **Frontend**: Vercel production with custom domain
+- **Monitoring**: Error tracking and performance monitoring
+- **Security**: SSL, rate limiting, input validation
+
 ## 🤝 Contributing
 
 ### Development Process
@@ -647,7 +735,7 @@ Expected: Filipino-friendly Facebook post with hashtags and call-to-action.
 ### Getting Help
 
 - **Documentation Issues**: Create GitHub issue with `documentation` label
-- **Setup Problems**: Check common issues section first
+- **Setup Problems**: Check troubleshooting section first, then create issue
 - **Feature Questions**: Review project roadmap in documentation
 - **Team Communication**: Use project Discord/Slack channel
 
@@ -655,7 +743,7 @@ Expected: Filipino-friendly Facebook post with hashtags and call-to-action.
 
 🔧 **TESTING & DEBUGGING PHASE**
 
-- Priority: Get application running locally
+- Priority: Get application running locally with all green checkmarks
 - Focus: Fix integration issues and ensure all features work
 - Next: Systematic testing before staging deployment
 
@@ -674,4 +762,4 @@ This project is proprietary software. All rights reserved.
 
 **Made with ❤️ in 🇵🇭 Philippines for Filipino businesses**
 
-For technical questions, create an issue in this repository or contact the development team.
+For technical questions or setup issues, create an issue in this repository or contact the development team.

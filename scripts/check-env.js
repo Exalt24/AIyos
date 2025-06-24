@@ -28,15 +28,30 @@ const checkEnvVariable = (envPath, variable, description) => {
   if (!existsSync(envPath)) return false;
   
   const envContent = readFileSync(envPath, 'utf8');
-  const hasVariable = envContent.includes(`${variable}=`) && 
-                     !envContent.includes(`${variable}=your_`) && 
-                     !envContent.includes(`${variable}=`);
   
-  if (hasVariable) {
-    log(`✅ ${description}`, 'green');
-    return true;
+  // Check if variable exists and has a non-placeholder value
+  const variablePattern = new RegExp(`^${variable}=(.+)$`, 'm');
+  const match = envContent.match(variablePattern);
+  
+  if (match && match[1]) {
+    const value = match[1].trim();
+    // Check if it's not a placeholder value
+    const isPlaceholder = value.includes('your_') || 
+                         value.includes('your-') || 
+                         value.includes('change-in-production') ||
+                         value === '' ||
+                         value.includes('api_key_here') ||
+                         value.includes('secret-key-here');
+    
+    if (!isPlaceholder) {
+      log(`✅ ${description}`, 'green');
+      return true;
+    } else {
+      log(`❌ ${description} (placeholder value found)`, 'red');
+      return false;
+    }
   } else {
-    log(`❌ ${description}`, 'red');
+    log(`❌ ${description} (missing or empty)`, 'red');
     return false;
   }
 };
