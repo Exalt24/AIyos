@@ -122,9 +122,9 @@ frontend/dist/
 frontend/.vercel
 
 # Package managers
-package-lock.json
-yarn.lock
-pnpm-lock.yaml
+# package-lock.json
+# yarn.lock
+# pnpm-lock.yaml
 
 # TypeScript build info
 *.tsbuildinfo
